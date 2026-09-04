@@ -54,3 +54,6 @@ export class SystemTelemetryLogger {
 }
 
 export const systemTelemetryLogger = new SystemTelemetryLogger();
+
+// Telemetry count helper
+export const getTelemetryBufferLength = () => systemTelemetryLogger.getEvents().length;
