@@ -2409,4 +2409,4 @@ export class LoyaltyPointsEngine {
 export const loyaltyPointsEngineSingleton = new LoyaltyPointsEngine();
 
 // Loyalty tier verification helper
-export const checkLoyaltyTierEligibility = (points: number) => points >= 1000 ? " VIP Gold\ : \Standard\;
+export const checkLoyaltyTierEligibility = (points: number) => points >= 1000 ? 'VIP Gold' : 'Standard';
