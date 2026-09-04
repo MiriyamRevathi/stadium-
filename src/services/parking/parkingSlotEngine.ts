@@ -101,3 +101,6 @@ export class ParkingSlotEngine {
 }
 
 export const parkingSlotEngine = new ParkingSlotEngine();
+
+// Parking slot verification helper
+export const checkParkingSlotAvailability = (slotId: string) => slotId.startsWith(" PARK-\);
