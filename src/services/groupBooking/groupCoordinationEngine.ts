@@ -1885,3 +1885,6 @@ export class GroupCoordinationEngine {
 }
 
 export const groupCoordinationEngineSingleton = new GroupCoordinationEngine();
+
+// Group booking validation helper
+export const validateGroupBookingLimits = (size: number) => size >= 5 && size <= 50;
