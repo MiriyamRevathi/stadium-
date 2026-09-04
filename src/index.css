@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --primary-orange: #F97316;
+    --black: #111111;
+    --white: #FFFFFF;
+    --bg-gray: #F4F4F5;
+    --sold-gray: #D1D5DB;
+    --border-gray: #E5E7EB;
+  }
+
+  html, body, #root {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--white);
+    color: var(--black);
+    font-family: 'Helvetica Neue', Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* Custom scrollbars for ticket list and seating panels */
+  ::-webkit-scrollbar,
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track,
+  .custom-scroll::-webkit-scrollbar-track {
+    background: #F4F4F5;
+  }
+  ::-webkit-scrollbar-thumb,
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover,
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #F97316;
+  }
+}
+
+/* Immersive UI stadium and seat styles */
+.section-path {
+  fill: #ffffff;
+  stroke: #111111;
+  stroke-width: 0.75;
+  transition: fill 0.2s, stroke 0.2s;
+  cursor: pointer;
+}
+.section-path:hover {
+  fill: #fef3c7 !important;
+}
+.section-selected {
+  fill: #F97316 !important;
+  stroke: #111111 !important;
+  stroke-width: 1.5 !important;
+}
+.field-green {
+  fill: #4ade80;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.seat {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px;
+  border: 1px solid #999;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+.seat-available {
+  background: #ffffff;
+  border-color: #999999;
+  color: #111111;
+}
+.seat-available:hover {
+  border-color: #F97316;
+  background: #FFF7ED;
+}
+.seat-sold {
+  background: #D1D5DB;
+  border-color: #D1D5DB;
+  color: #6B7280;
+  cursor: not-allowed;
+}
+.seat-selected {
+  background: #F97316;
+  border-color: #F97316;
+  color: #FFFFFF;
+}
+.seat-blocked {
+  background: #EEEEEE;
+  border-color: #DDDDDD;
+  color: #9CA3AF;
+  cursor: not-allowed;
+}
