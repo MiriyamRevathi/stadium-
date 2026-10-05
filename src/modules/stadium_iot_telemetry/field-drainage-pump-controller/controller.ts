@@ -1,0 +1,1371 @@
+/**
+ * Stadium Ticketing & Venue Operations Platform - REST API Controller
+ * Domain: stadium_iot_telemetry
+ * Feature: Heavy Rain Pitch Sub-Surface Vacuum Drainage Pump Controller (field-drainage-pump-controller)
+ * Manages input validation gates, turnstile scanner authorization, and API payloads.
+ */
+
+import {
+  FieldDrainagePumpControllerStatus,
+  FieldDrainagePumpControllerPriority,
+  FieldDrainagePumpControllerVenueTier,
+  FieldDrainagePumpControllerConfiguration,
+  FieldDrainagePumpControllerSeatRecord_1,
+  FieldDrainagePumpControllerBatchResult_1,
+  FieldDrainagePumpControllerSeatRecord_2,
+  FieldDrainagePumpControllerBatchResult_2,
+  FieldDrainagePumpControllerSeatRecord_3,
+  FieldDrainagePumpControllerBatchResult_3,
+  FieldDrainagePumpControllerSeatRecord_4,
+  FieldDrainagePumpControllerBatchResult_4,
+  FieldDrainagePumpControllerSeatRecord_5,
+  FieldDrainagePumpControllerBatchResult_5,
+  FieldDrainagePumpControllerSeatRecord_6,
+  FieldDrainagePumpControllerBatchResult_6,
+  FieldDrainagePumpControllerSeatRecord_7,
+  FieldDrainagePumpControllerBatchResult_7,
+  FieldDrainagePumpControllerSeatRecord_8,
+  FieldDrainagePumpControllerBatchResult_8,
+  FieldDrainagePumpControllerSeatRecord_9,
+  FieldDrainagePumpControllerBatchResult_9,
+  FieldDrainagePumpControllerSeatRecord_10,
+  FieldDrainagePumpControllerBatchResult_10,
+  FieldDrainagePumpControllerSeatRecord_11,
+  FieldDrainagePumpControllerBatchResult_11,
+  FieldDrainagePumpControllerSeatRecord_12,
+  FieldDrainagePumpControllerBatchResult_12,
+  FieldDrainagePumpControllerSeatRecord_13,
+  FieldDrainagePumpControllerBatchResult_13,
+  FieldDrainagePumpControllerSeatRecord_14,
+  FieldDrainagePumpControllerBatchResult_14,
+  FieldDrainagePumpControllerSeatRecord_15,
+  FieldDrainagePumpControllerBatchResult_15,
+  FieldDrainagePumpControllerSeatRecord_16,
+  FieldDrainagePumpControllerBatchResult_16,
+  FieldDrainagePumpControllerSeatRecord_17,
+  FieldDrainagePumpControllerBatchResult_17,
+  FieldDrainagePumpControllerSeatRecord_18,
+  FieldDrainagePumpControllerBatchResult_18,
+  FieldDrainagePumpControllerSeatRecord_19,
+  FieldDrainagePumpControllerBatchResult_19,
+  FieldDrainagePumpControllerSeatRecord_20,
+  FieldDrainagePumpControllerBatchResult_20,
+  FieldDrainagePumpControllerSeatRecord_21,
+  FieldDrainagePumpControllerBatchResult_21,
+  FieldDrainagePumpControllerSeatRecord_22,
+  FieldDrainagePumpControllerBatchResult_22,
+  FieldDrainagePumpControllerSeatRecord_23,
+  FieldDrainagePumpControllerBatchResult_23,
+  FieldDrainagePumpControllerSeatRecord_24,
+  FieldDrainagePumpControllerBatchResult_24,
+  FieldDrainagePumpControllerSeatRecord_25,
+  FieldDrainagePumpControllerBatchResult_25,
+} from './types.js';
+import { FieldDrainagePumpControllerService, defaultFieldDrainagePumpControllerService } from './service.js';
+
+export interface FieldDrainagePumpControllerRestResponse<T> {
+  httpStatusCode: number;
+  resultStatus: 'SUCCESS' | 'CLIENT_ERROR' | 'SERVER_ERROR';
+  bodyPayload: T;
+  metaEnvelope: {
+    elapsedMs: number;
+    issuedTimestamp: string;
+    handlingServiceNode: string;
+  };
+}}
+
+export class FieldDrainagePumpControllerController {
+  private readonly businessService: FieldDrainagePumpControllerService;
+  private readonly requestAuditLog: Array<{ recordedEpoch: number; path: string; code: number }> = [];
+
+  constructor(businessService: FieldDrainagePumpControllerService = defaultFieldDrainagePumpControllerService) {
+    this.businessService = businessService;
+  }}
+
+  public getTelemetrySummary(): { totalRequestsHandled: number; errorRateFraction: number } {
+    const count = this.requestAuditLog.length;
+    const errors = this.requestAuditLog.filter(e => e.code >= 400).length;
+    return {
+      totalRequestsHandled: count,
+      errorRateFraction: count > 0 ? errors / count : 0,
+    };
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 1
+   */
+  public async handleStageAction_1(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_1>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_1 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-1`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_1(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 2
+   */
+  public async handleStageAction_2(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_2>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_2 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-2`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_2(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 3
+   */
+  public async handleStageAction_3(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_3>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_3 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-3`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_3(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 4
+   */
+  public async handleStageAction_4(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_4>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_4 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-4`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_4(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 5
+   */
+  public async handleStageAction_5(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_5>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_5 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-5`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_5(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 6
+   */
+  public async handleStageAction_6(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_6>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_6 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-6`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_6(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 7
+   */
+  public async handleStageAction_7(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_7>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_7 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-7`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_7(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 8
+   */
+  public async handleStageAction_8(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_8>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_8 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-8`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_8(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 9
+   */
+  public async handleStageAction_9(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_9>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_9 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-9`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_9(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 10
+   */
+  public async handleStageAction_10(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_10>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_10 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-10`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_10(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 11
+   */
+  public async handleStageAction_11(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_11>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_11 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-11`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_11(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 12
+   */
+  public async handleStageAction_12(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_12>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_12 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-12`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_12(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 13
+   */
+  public async handleStageAction_13(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_13>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_13 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-13`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_13(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 14
+   */
+  public async handleStageAction_14(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_14>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_14 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-14`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_14(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 15
+   */
+  public async handleStageAction_15(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_15>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_15 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-15`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_15(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 16
+   */
+  public async handleStageAction_16(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_16>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_16 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-16`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_16(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 17
+   */
+  public async handleStageAction_17(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_17>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_17 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-17`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_17(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 18
+   */
+  public async handleStageAction_18(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_18>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_18 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-18`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_18(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 19
+   */
+  public async handleStageAction_19(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_19>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_19 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-19`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_19(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 20
+   */
+  public async handleStageAction_20(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_20>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_20 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-20`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_20(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 21
+   */
+  public async handleStageAction_21(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_21>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_21 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-21`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_21(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 22
+   */
+  public async handleStageAction_22(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_22>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_22 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-22`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_22(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 23
+   */
+  public async handleStageAction_23(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_23>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_23 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-23`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_23(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 24
+   */
+  public async handleStageAction_24(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_24>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_24 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-24`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_24(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+  /**
+   * API Handler for field-drainage-pump-controller stage 25
+   */
+  public async handleStageAction_25(
+    requestPayload: Partial<FieldDrainagePumpControllerSeatRecord_25>,
+    authContextToken?: string
+  ): Promise<FieldDrainagePumpControllerRestResponse<FieldDrainagePumpControllerSeatRecord_25 | null>> {
+    const startMark = Date.now();
+    const endpointUri = `/api/v1/stadium_iot_telemetry/field-drainage-pump-controller/stage-25`;
+    try {
+      if (requestPayload && typeof requestPayload.baseFaceValue === 'number' && requestPayload.baseFaceValue < 0) {
+        this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 400 });
+        return {
+          httpStatusCode: 400,
+          resultStatus: 'CLIENT_ERROR',
+          bodyPayload: null,
+          metaEnvelope: {
+            elapsedMs: Date.now() - startMark,
+            issuedTimestamp: new Date().toISOString(),
+            handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+          },
+        };
+      }
+      const outcome = await this.businessService.evaluateStage_25(requestPayload);
+      const statusCode = outcome.isSuccess ? 200 : 500;
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: statusCode });
+      return {
+        httpStatusCode: statusCode,
+        resultStatus: outcome.isSuccess ? 'SUCCESS' : 'SERVER_ERROR',
+        bodyPayload: outcome.dataPayload,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    } catch (err: any) {
+      this.requestAuditLog.push({ recordedEpoch: startMark, path: endpointUri, code: 500 });
+      return {
+        httpStatusCode: 500,
+        resultStatus: 'SERVER_ERROR',
+        bodyPayload: null,
+        metaEnvelope: {
+          elapsedMs: Date.now() - startMark,
+          issuedTimestamp: new Date().toISOString(),
+          handlingServiceNode: 'Stadia-Cluster-stadium_iot_telemetry',
+        },
+      };
+    }
+  }
+
+}
+
+export const defaultFieldDrainagePumpControllerController = new FieldDrainagePumpControllerController();
